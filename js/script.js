@@ -1,5 +1,6 @@
 console.log('JS OK!');
 
+
 const slides = [
     {
         image: 'img/01.jpg',
@@ -30,14 +31,67 @@ const slides = [
 
 console.log(slides);
 
-const app = new Vue({
-    el: '#root',
 
+const app = new Vue({
+    el: '#app',
     data: {
+        activeIndex: 0,
+        slides,
+        IntervalId: undefined,
+    },
+    methods: {
+        showPreviousImage: function () {
+            console.log('showPreviousImage');
+            if (this.activeIndex > 0) {
+                this.activeIndex--;
+            } else {
+                this.activeIndex = this.slides.length - 1;
+            }
+        },
+        showNextImage() {
+            console.log('showNextImage');
+            if (this.activeIndex === this.slides.length - 1) {
+                this.activeIndex = 0;
+            } else {
+                this.activeIndex++;
+            }
+        },
+
+        selectImage(newActiveIndex) {
+            console.log('Indice immagine cliccata: ', newActiveIndex);
+            console.log('Indice immagine attiva: ', this.activeIndex);
+
+            this.activeIndex = newActiveIndex;
+        },
+        createInterval() {
+            this.IntervalId = setInterval(this.showNextImage, 3000)
+        },
+        deleteInterval() {
+            if (this.IntervalId) {
+                clearInterval(this.IntervalId)
+            }
+        },
+        onNextClick() {
+            this.showNextImage();
+            this.deleteInterval();
+            this.createInterval();
+        },
+        onPreviousClick() {
+            this.showPreviousImage();
+            this.deleteInterval();
+            this.createInterval();
+        },
 
     },
-
-    methods: {
-
+    /*
+    created: function () {
+        console.log('Created');
+    },
+    */
+    mounted() {
+        console.log('Mounted!');
+        this.createInterval();
     }
+
+
 })
